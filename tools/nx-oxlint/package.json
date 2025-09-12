@@ -2,6 +2,12 @@
   "name": "nx-oxlint",
   "version": "0.0.0",
   "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nas3nmann/nx-oxlint",
+    "directory": "tools/nx-oxlint"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
