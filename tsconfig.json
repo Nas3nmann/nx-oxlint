@@ -5,6 +5,9 @@
   "references": [
     {
       "path": "./apps/react-app"
+    },
+    {
+      "path": "./libs/react-lib"
     }
   ]
 }
