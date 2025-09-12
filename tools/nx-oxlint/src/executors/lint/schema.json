@@ -38,6 +38,10 @@
       "type": "number",
       "description": "Specify a warning threshold, which can be used to force exit with an error status if there are too many warning-level rule violations",
       "minimum": 0
+    },
+    "configFile": {
+      "type": "string",
+      "description": "Path to the oxlint configuration file (.oxlintrc.json)"
     }
   },
   "required": []

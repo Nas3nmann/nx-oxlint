@@ -1,6 +1,7 @@
 import { PromiseExecutor, ExecutorContext } from '@nx/devkit';
 import { execSync } from 'child_process';
 import { join } from 'path';
+import { existsSync } from 'fs';
 import { LintExecutorSchema } from './schema';
 
 const runExecutor: PromiseExecutor<LintExecutorSchema> = async (
@@ -14,8 +15,38 @@ const runExecutor: PromiseExecutor<LintExecutorSchema> = async (
 
   const oxlintBinaryPath = join(context.root, 'node_modules', '.bin', 'oxlint');
 
+  let configFilePath: string | undefined;
+
+  if (options.configFile) {
+    configFilePath = join(context.root, options.configFile);
+    if (!existsSync(configFilePath)) {
+      console.warn(
+        `Warning: Specified config file not found: ${configFilePath}`
+      );
+      configFilePath = undefined;
+    }
+  } else {
+    const defaultConfigPaths = [
+      join(context.root, projectRoot, '.oxlintrc.json'),
+      join(context.root, projectRoot, '.oxlintrc'),
+      join(context.root, projectRoot, 'oxlint.json'),
+    ];
+
+    for (const configPath of defaultConfigPaths) {
+      if (existsSync(configPath)) {
+        configFilePath = configPath;
+        break;
+      }
+    }
+  }
+
   console.log(`Running oxlint for project: ${context.projectName}`);
   console.log(`Project root: ${projectRoot}`);
+  if (configFilePath) {
+    console.log(`Using config file: ${configFilePath}`);
+  } else {
+    console.log('No configuration file found, using default settings');
+  }
 
   try {
     const args: string[] = [];
@@ -38,6 +69,10 @@ const runExecutor: PromiseExecutor<LintExecutorSchema> = async (
 
     if (options.maxWarnings !== undefined) {
       args.push(`--max-warnings=${options.maxWarnings}`);
+    }
+
+    if (configFilePath) {
+      args.push(`--config=${configFilePath}`);
     }
 
     const command = `${oxlintBinaryPath} ${args.join(' ')}`;

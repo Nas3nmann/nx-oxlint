@@ -1,5 +1,6 @@
 import { ExecutorContext } from '@nx/devkit';
 import { execSync } from 'child_process';
+import { existsSync } from 'fs';
 import { join } from 'path';
 import { vi } from 'vitest';
 
@@ -7,7 +8,9 @@ import { LintExecutorSchema } from './schema';
 import executor from './lint';
 
 vi.mock('child_process');
+vi.mock('fs');
 const mockExecSync = vi.mocked(execSync);
+const mockExistsSync = vi.mocked(existsSync);
 
 describe('Lint Executor', () => {
   const mockContext: ExecutorContext = {
@@ -40,8 +43,10 @@ describe('Lint Executor', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockExecSync.mockReturnValue('');
+    mockExistsSync.mockReturnValue(false);
     console.log = vi.fn();
     console.error = vi.fn();
+    console.warn = vi.fn();
   });
 
   describe('successful execution', () => {
@@ -303,6 +308,151 @@ describe('Lint Executor', () => {
 
       expect(result.success).toBe(false);
       expect(console.error).toHaveBeenCalledWith('stderr only');
+    });
+  });
+
+  describe('configuration file handling', () => {
+    it('should use explicitly provided config file when it exists', async () => {
+      const configPath = '/workspace/custom-config.json';
+      mockExistsSync.mockImplementation((path) => path === configPath);
+
+      const options: LintExecutorSchema = {
+        configFile: 'custom-config.json',
+      };
+
+      await executor(options, mockContext);
+
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project --config=${configPath}`,
+        expect.any(Object)
+      );
+      expect(console.log).toHaveBeenCalledWith(
+        `Using config file: ${configPath}`
+      );
+    });
+
+    it('should warn when explicitly provided config file does not exist', async () => {
+      mockExistsSync.mockReturnValue(false);
+
+      const options: LintExecutorSchema = {
+        configFile: 'non-existent-config.json',
+      };
+
+      await executor(options, mockContext);
+
+      expect(console.warn).toHaveBeenCalledWith(
+        'Warning: Specified config file not found: /workspace/non-existent-config.json'
+      );
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project`,
+        expect.any(Object)
+      );
+    });
+
+    it('should find and use default .oxlintrc.json in project root', async () => {
+      const defaultConfigPath = '/workspace/apps/test-project/.oxlintrc.json';
+      mockExistsSync.mockImplementation((path) => path === defaultConfigPath);
+
+      const options: LintExecutorSchema = {};
+
+      await executor(options, mockContext);
+
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project --config=${defaultConfigPath}`,
+        expect.any(Object)
+      );
+      expect(console.log).toHaveBeenCalledWith(
+        `Using config file: ${defaultConfigPath}`
+      );
+    });
+
+    it('should find and use default .oxlintrc in project root when .oxlintrc.json does not exist', async () => {
+      const defaultConfigPath = '/workspace/apps/test-project/.oxlintrc';
+      mockExistsSync.mockImplementation((path) => path === defaultConfigPath);
+
+      const options: LintExecutorSchema = {};
+
+      await executor(options, mockContext);
+
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project --config=${defaultConfigPath}`,
+        expect.any(Object)
+      );
+      expect(console.log).toHaveBeenCalledWith(
+        `Using config file: ${defaultConfigPath}`
+      );
+    });
+
+    it('should find and use oxlint.json when other config files do not exist', async () => {
+      const defaultConfigPath = '/workspace/apps/test-project/oxlint.json';
+      mockExistsSync.mockImplementation((path) => path === defaultConfigPath);
+
+      const options: LintExecutorSchema = {};
+
+      await executor(options, mockContext);
+
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project --config=${defaultConfigPath}`,
+        expect.any(Object)
+      );
+      expect(console.log).toHaveBeenCalledWith(
+        `Using config file: ${defaultConfigPath}`
+      );
+    });
+
+    it('should run without config when no config files are found', async () => {
+      mockExistsSync.mockReturnValue(false);
+
+      const options: LintExecutorSchema = {};
+
+      await executor(options, mockContext);
+
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project`,
+        expect.any(Object)
+      );
+      expect(console.log).toHaveBeenCalledWith(
+        'No configuration file found, using default settings'
+      );
+    });
+
+    it('should prioritize .oxlintrc.json over other config files', async () => {
+      const oxlintrcJson = '/workspace/apps/test-project/.oxlintrc.json';
+      const oxlintrc = '/workspace/apps/test-project/.oxlintrc';
+      const oxlintJson = '/workspace/apps/test-project/oxlint.json';
+
+      mockExistsSync.mockImplementation((path) => {
+        return (
+          path === oxlintrcJson || path === oxlintrc || path === oxlintJson
+        );
+      });
+
+      const options: LintExecutorSchema = {};
+
+      await executor(options, mockContext);
+
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project --config=${oxlintrcJson}`,
+        expect.any(Object)
+      );
+    });
+
+    it('should combine config file with other options', async () => {
+      const configPath = '/workspace/apps/test-project/.oxlintrc.json';
+      mockExistsSync.mockImplementation((path) => path === configPath);
+
+      const options: LintExecutorSchema = {
+        fix: true,
+        format: 'json',
+        quiet: true,
+      };
+
+      await executor(options, mockContext);
+
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project --fix --format=json --quiet --config=${configPath}`,
+        expect.any(Object)
+      );
     });
   });
 

@@ -12,4 +12,5 @@ export interface LintExecutorSchema {
     | 'unix';
   quiet?: boolean;
   maxWarnings?: number;
+  configFile?: string;
 }
