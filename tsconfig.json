@@ -8,6 +8,9 @@
     },
     {
       "path": "./libs/react-lib"
+    },
+    {
+      "path": "./libs/ts-lib"
     }
   ]
 }
