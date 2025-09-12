@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
       - name: Lint
-        run: npx nx lint nx-oxlint
+        run: npx nx oxlint nx-oxlint
 
       - name: Test
         run: npx nx test nx-oxlint

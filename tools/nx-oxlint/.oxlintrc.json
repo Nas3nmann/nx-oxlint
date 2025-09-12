@@ -1,0 +1,13 @@
+{
+  "rules": {
+    "no-unused-vars": "warn",
+    "eqeqeq": "error",
+    "prefer-const": "error",
+    "no-var": "error",
+    "no-console": "off"
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  }
+}
