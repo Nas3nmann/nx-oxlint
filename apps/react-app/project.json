@@ -1,0 +1,13 @@
+{
+  "name": "react-app",
+  "targets": {
+    "oxlint": {
+      "executor": "nx-oxlint:lint",
+      "cache": true,
+      "inputs": ["default", "^default"],
+      "options": {
+        "projectRoot": "apps/react-app"
+      }
+    }
+  }
+}

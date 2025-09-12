@@ -1,0 +1,13 @@
+{
+  "name": "react-lib",
+  "targets": {
+    "oxlint": {
+      "executor": "nx-oxlint:lint",
+      "cache": true,
+      "inputs": ["default", "^default"],
+      "options": {
+        "projectRoot": "libs/react-lib"
+      }
+    }
+  }
+}
