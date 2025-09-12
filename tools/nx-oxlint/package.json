@@ -44,6 +44,14 @@
     }
   },
   "dependencies": {
+    "@nx/devkit": "21.5.2",
+    "oxlint": "^1.15.0",
     "tslib": "^2.3.0"
-  }
+  },
+  "executors": "./executors.json",
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo",
+    "executors.json"
+  ]
 }

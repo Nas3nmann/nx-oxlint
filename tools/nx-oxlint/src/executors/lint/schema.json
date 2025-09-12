@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "version": 2,
+  "title": "Oxlint executor",
+  "description": "Run oxlint on a project",
+  "type": "object",
+  "properties": {
+    "projectRoot": {
+      "type": "string",
+      "description": "The root directory of the project to lint"
+    },
+    "fix": {
+      "type": "boolean",
+      "description": "Fix as many issues as possible",
+      "default": false
+    },
+    "format": {
+      "type": "string",
+      "description": "Use a specific output format",
+      "enum": [
+        "checkstyle",
+        "default",
+        "github",
+        "gitlab",
+        "json",
+        "junit",
+        "stylish",
+        "unix"
+      ],
+      "default": "default"
+    },
+    "quiet": {
+      "type": "boolean",
+      "description": "Disable reporting on warnings, only errors are reported",
+      "default": false
+    },
+    "maxWarnings": {
+      "type": "number",
+      "description": "Specify a warning threshold, which can be used to force exit with an error status if there are too many warning-level rule violations",
+      "minimum": 0
+    }
+  },
+  "required": []
+}
