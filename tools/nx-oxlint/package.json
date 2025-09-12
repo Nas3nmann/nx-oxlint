@@ -1,0 +1,49 @@
+{
+  "name": "nx-oxlint",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@nx-oxlint/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/js:tsc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "tools/nx-oxlint/dist",
+          "main": "tools/nx-oxlint/src/index.ts",
+          "tsConfig": "tools/nx-oxlint/tsconfig.lib.json",
+          "rootDir": "tools/nx-oxlint/src",
+          "generatePackageJson": false,
+          "assets": [
+            {
+              "input": "./tools/nx-oxlint/src",
+              "glob": "**/!(*.ts)",
+              "output": "."
+            },
+            {
+              "input": "./tools/nx-oxlint/src",
+              "glob": "**/*.d.ts",
+              "output": "."
+            }
+          ]
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}

@@ -11,6 +11,9 @@
     },
     {
       "path": "./libs/ts-lib"
+    },
+    {
+      "path": "./tools/nx-oxlint"
     }
   ]
 }
