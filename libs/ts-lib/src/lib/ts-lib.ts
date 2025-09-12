@@ -1,3 +1,3 @@
 export function tsLib(): string {
-  return 'ts-lib';
+  return 'ts-lib - dependency test';
 }

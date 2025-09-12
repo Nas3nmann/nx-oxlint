@@ -1,48 +1,46 @@
-import NxWelcome from './nx-welcome';
-
-import { Route, Routes, Link } from 'react-router-dom';
+import { ReactLib } from '@nx-oxlint/react-lib';
+import { tsLib } from '@nx-oxlint/ts-lib';
 
 export function App() {
-  return (
-    <div>
-      <NxWelcome title="@nx-oxlint/react-app" />
+  const tsMessage = tsLib();
 
-      {/* START: routes */}
-      {/* These routes and navigation have been generated for you */}
-      {/* Feel free to move and update them to fit your needs */}
-      <br />
-      <hr />
-      <br />
-      <div role="navigation">
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/page-2">Page 2</Link>
-          </li>
-        </ul>
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">
+          Nx Oxlint Plugin Demo
+        </h1>
+
+        <div className="space-y-6">
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <h2 className="text-xl font-semibold mb-4">
+              Library Dependencies Test
+            </h2>
+            <p className="text-gray-600 mb-4">
+              This app demonstrates the dependency chain: react-app → react-lib
+              → ts-lib
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-medium text-gray-800 mb-2">
+                  React Library Component:
+                </h3>
+                <ReactLib />
+              </div>
+
+              <div>
+                <h3 className="font-medium text-gray-800 mb-2">
+                  Direct ts-lib usage:
+                </h3>
+                <div className="p-3 bg-gray-100 rounded border">
+                  <code className="text-sm">{tsMessage}</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              This is the generated root route.{' '}
-              <Link to="/page-2">Click here for page 2.</Link>
-            </div>
-          }
-        />
-        <Route
-          path="/page-2"
-          element={
-            <div>
-              <Link to="/">Click here to go back to root page.</Link>
-            </div>
-          }
-        />
-      </Routes>
-      {/* END: routes */}
     </div>
   );
 }
