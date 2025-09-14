@@ -7,8 +7,7 @@
       "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/eslint.config.mjs",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/src/test-setup.[jt]s"
+      "!{projectRoot}/tsconfig.spec.json"
     ],
     "sharedGlobals": []
   },
@@ -85,6 +84,12 @@
     },
     "test": {
       "dependsOn": ["^build"]
+    },
+    "e2e": {
+      "dependsOn": ["^build"]
     }
+  },
+  "release": {
+    "projectsRelationship": "independent"
   }
 }

@@ -14,6 +14,9 @@
     },
     {
       "path": "./tools/nx-oxlint"
+    },
+    {
+      "path": "./tools/nx-oxlint-e2e"
     }
   ]
 }
