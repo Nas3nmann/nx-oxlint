@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "Init",
+  "title": "Initialize nx-oxlint in workspace",
+  "description": "Adds nx-oxlint package to the workspace and configures oxlint executor for all existing projects",
+  "type": "object",
+  "properties": {},
+  "required": []
+}
