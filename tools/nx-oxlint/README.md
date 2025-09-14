@@ -1,18 +1,34 @@
 # nx-oxlint
 
-An Nx executor plugin for [oxlint](https://oxc-project.github.io/docs/guide/usage/linter.html) - a fast ESLint alternative written in Rust.
+An Nx plugin for [oxlint](https://oxc-project.github.io/docs/guide/usage/linter.html) - a fast ESLint alternative written in Rust.
 
-## Installation
+## Quick Setup with generator
+
+The easiest way to set up nx-oxlint in your workspace is to use the init generator:
+
+```bash
+npx nx g nx-oxlint:init
+```
+
+This command will:
+
+- Add `nx-oxlint` as a devDependency to your workspace
+- Configure the `lint` target for all existing projects in your workspace
+- Overwrite any existing lint targets (like ESLint) with nx-oxlint configuration
+
+This command will **not**:
+
+- Create an `.oxlintrc.json`, so running `lint` will use the default config. Feel free to add a config file and modify the rules as needed
+
+## Manual Setup
+
+### Install
 
 ```bash
 npm install nx-oxlint
 ```
 
-## Usage
-
-Add the executor to your project's `project.json`:
-
-**Minimal setup** (all options are optional):
+### Add executor to `project.json`:
 
 ```json
 {
@@ -24,36 +40,24 @@ Add the executor to your project's `project.json`:
 }
 ```
 
-**With custom options**:
-
-```json
-{
-  "targets": {
-    "lint": {
-      "executor": "nx-oxlint:lint",
-      "options": {
-        "projectRoot": ".",
-        "configFile": ".oxlintrc.json",
-        "fix": true,
-        "format": "json"
-      }
-    }
-  }
-}
-```
-
-Run linting:
+## Run Linting with Executor:
 
 ```bash
 nx lint your-project
 ```
 
-## Options
+or
+
+```bash
+nx run-many --target lint
+```
+
+## Executor Options
 
 All options are optional. The executor will work with minimal configuration.
 
 - `projectRoot` _(optional)_ - Project root directory (defaults to current project root)
-- `configFile` _(optional)_ - Path to oxlint configuration file (auto-detected if not specified)
+- `configFile` _(optional)_ - Path to oxlint configuration file (auto-detected by oxlint if not specified, if specified other config files are ignored)
 - `fix` _(optional)_ - Automatically fix problems (default: `false`)
 - `format` _(optional)_ - Output format (default: `"default"`)
   - Available formats: `checkstyle`, `default`, `github`, `gitlab`, `json`, `junit`, `stylish`, `unix`
