@@ -99,7 +99,3 @@ All options are optional. The executor will work with minimal configuration.
 If no config file is passed to the plugin/executor, Oxlint will automatically look for configuration files and even consider nested configs with name `.oxlintrc.json`
 
 See [oxlint documentation](https://oxc-project.github.io/docs/guide/usage/linter.html) for configuration options.
-
-```
-
-```
