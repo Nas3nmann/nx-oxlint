@@ -7,18 +7,24 @@ An Nx plugin for [oxlint](https://oxc-project.github.io/docs/guide/usage/linter.
 The easiest way to set up nx-oxlint in your workspace is to use the init generator:
 
 ```bash
-npx nx g nx-oxlint:init
+npx nx add nx-oxlint
 ```
 
 This command will:
 
 - Add `nx-oxlint` as a devDependency to your workspace
-- Configure the `lint` target for all existing projects in your workspace
-- Overwrite any existing lint targets (like ESLint) with nx-oxlint configuration
+- Remove existing `@nx/eslint/plugin` configuration in your `nx.json`
+- Add a plugin configuration for `nx-oxlint` with an interferred `lint` target to your `nx.json`
 
 This command will **not**:
 
 - Create an `.oxlintrc.json`, so running `lint` will use the default config. Feel free to add a config file and modify the rules as needed
+
+You might need to update the nx deamon and cache using
+
+```bash
+nx reset
+```
 
 ## Manual Setup
 
@@ -28,7 +34,21 @@ This command will **not**:
 npm install nx-oxlint
 ```
 
-### Add executor to `project.json`:
+### Add plugin to your `nx.json` OR
+
+````json
+{
+  plugins: [
+    {
+      "plugin": "nx-oxlint",
+      "options": {
+        "lintTargetName": "lint"
+      }
+    },
+  ]
+}
+
+### Add the executor to `project.json`:
 
 ```json
 {
@@ -38,12 +58,12 @@ npm install nx-oxlint
     }
   }
 }
-```
+````
 
-## Run Linting with Executor:
+## Run Linting:
 
 ```bash
-nx lint your-project
+nx run your-project:lint
 ```
 
 or
@@ -51,6 +71,13 @@ or
 ```bash
 nx run-many --target lint
 ```
+
+## Plugin Options
+
+All options are optional. The plugin will use `lint` as default target
+
+- `lintTargetName` _(optional)_ - target name for running oxlint, with this you can even keep using eslint as backup
+- All other options that the executor provides. See below
 
 ## Executor Options
 
@@ -66,10 +93,6 @@ All options are optional. The executor will work with minimal configuration.
 
 ## Configuration
 
-The executor automatically looks for configuration files in this order:
-
-1. `.oxlintrc.json`
-2. `.oxlintrc`
-3. `oxlint.json`
+If no config file is passed to the plugin/executor, Oxlint will automatically look for configuration files and even consider nested configs with name `.oxlintrc.json`
 
 See [oxlint documentation](https://oxc-project.github.io/docs/guide/usage/linter.html) for configuration options.
