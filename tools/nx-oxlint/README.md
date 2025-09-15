@@ -1,3 +1,5 @@
+[![Weekly E2E Tests](https://github.com/Nas3nmann/nx-oxlint/actions/workflows/weekly-e2e.yml/badge.svg)](https://github.com/Nas3nmann/nx-oxlint/actions/workflows/weekly-e2e.yml)
+
 # nx-oxlint
 
 An Nx plugin for [oxlint](https://oxc-project.github.io/docs/guide/usage/linter.html) - a fast ESLint alternative written in Rust.
