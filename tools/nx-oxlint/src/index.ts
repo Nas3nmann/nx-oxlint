@@ -28,10 +28,10 @@ export interface OxlintPluginOptions {
   maxWarnings?: number;
 }
 
-export const oxlintConfigGlob = '**/oxlintrc.json';
+export const nxProjectConfigGlob = '**/{package,project}.json';
 
 export const createNodesV2: CreateNodesV2<OxlintPluginOptions> = [
-  oxlintConfigGlob,
+  nxProjectConfigGlob,
   async (configFiles, options, context) => {
     return await createNodesFromFiles(
       (configFile, options, context) =>
@@ -51,15 +51,8 @@ async function createNodesInternal(
   context: CreateNodesContextV2
 ) {
   const projectRoot = dirname(configFilePath);
-
-  // Do not consider directory if package.json or project.json isn't there.
   const siblingFiles = readdirSync(join(context.workspaceRoot, projectRoot));
-  if (
-    !siblingFiles.includes('package.json') &&
-    !siblingFiles.includes('project.json')
-  ) {
-    return {};
-  }
+  const hasOxlintConfig = siblingFiles.includes('.oxlintrc.json');
 
   const lintTarget: TargetConfiguration = {
     executor: 'nx-oxlint:lint',
@@ -69,7 +62,7 @@ async function createNodesInternal(
     },
     cache: true,
     inputs: [
-      '{projectRoot}/oxlintrc.json',
+      ...(hasOxlintConfig ? ['{projectRoot}/.oxlintrc.json'] : []),
       joinPathFragments('{projectRoot}', '**', '*'),
       {
         externalDependencies: ['oxlint'],

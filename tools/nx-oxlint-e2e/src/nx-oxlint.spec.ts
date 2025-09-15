@@ -4,6 +4,7 @@ import { join } from 'path';
 
 describe('nx-oxlint', () => {
   let projectDirectory: string;
+  const workspaceName = 'test-workspace';
   const testAppName = 'test-app';
   const testReactLibName = 'test-react-lib';
   const testTsLibName = 'test-ts-lib';
@@ -12,7 +13,8 @@ describe('nx-oxlint', () => {
     // The plugin has been built and published to a local registry in the vitest globalSetup
 
     // Create new nx workspace
-    projectDirectory = createTestProject(testAppName);
+    projectDirectory = createTestWorkspace(workspaceName);
+    createTestApp(projectDirectory, testAppName);
     createTestLib(projectDirectory, testReactLibName, 'react');
     createTestLib(projectDirectory, testTsLibName, 'js');
 
@@ -24,15 +26,20 @@ describe('nx-oxlint', () => {
         npm_config_registry: 'http://localhost:4873',
       },
     });
+
+    // Reset the workspace to ensure new targets are added
+    execSync('nx reset', {
+      cwd: projectDirectory,
+      stdio: 'inherit',
+    });
   });
 
-  afterAll(() => {
-    if (projectDirectory) {
-      // Cleanup the test project
-      // rmSync(projectDirectory, {
-      //   recursive: true,
-      //   force: true,
-      // });
+  afterAll((suite) => {
+    if (projectDirectory && suite.result?.state === 'pass') {
+      rmSync(projectDirectory, {
+        recursive: true,
+        force: true,
+      });
     }
   });
 
@@ -47,46 +54,55 @@ describe('nx-oxlint', () => {
   it('should install nx-oxlint', () => {
     const result = execSync('npm ls nx-oxlint', {
       cwd: projectDirectory,
-      stdio: 'inherit',
+      stdio: 'pipe',
+    }).toString();
+
+    expect(result).toMatch(/nx-oxlint@(\d+\.\d+\.\d+-e2e)/);
+  });
+
+  it('should configure nx-oxlint as plugin in nx.json', () => {
+    const nxJson = JSON.parse(
+      readFileSync(join(projectDirectory, 'nx.json'), 'utf-8')
+    );
+    expect(nxJson.plugins).toContainEqual({
+      plugin: 'nx-oxlint',
+      options: {
+        lintTargetName: 'lint',
+      },
     });
-
-    expect(result).toContain('nx-oxlint');
   });
 
-  it('should set nx-oxlint as default executor for all projects lint target', () => {
-    const appProjectJson = JSON.parse(
-      readFileSync(
-        join(projectDirectory, 'apps', testAppName, 'project.json'),
-        'utf-8'
-      )
-    );
-    expect(appProjectJson.targets.lint.executor).toBe('nx-oxlint:lint');
+  it.each([
+    { projectName: `@${workspaceName}/source`, projectType: 'app' },
+    { projectName: testReactLibName, projectType: 'lib' },
+    { projectName: testTsLibName, projectType: 'lib' },
+  ])(
+    'should infer the lint target for $projectName',
+    ({ projectName, projectType }) => {
+      const projectDetails = JSON.parse(
+        execSync(`npx nx show project ${projectName} --json`, {
+          cwd: projectDirectory,
+        }).toString()
+      );
 
-    const reactLibProjectJson = JSON.parse(
-      readFileSync(
-        join(projectDirectory, 'libs', testReactLibName, 'project.json'),
-        'utf-8'
-      )
-    );
-    expect(reactLibProjectJson.targets.lint.executor).toBe('nx-oxlint:lint');
-
-    const tsLibProjectJson = JSON.parse(
-      readFileSync(
-        join(projectDirectory, 'libs', testTsLibName, 'project.json'),
-        'utf-8'
-      )
-    );
-    expect(tsLibProjectJson.targets.lint.executor).toBe('nx-oxlint:lint');
-  });
+      expect(projectDetails.targets.lint).toEqual(
+        expect.objectContaining({
+          executor: 'nx-oxlint:lint',
+          cache: true,
+          inputs: ['{projectRoot}/**/*', { externalDependencies: ['oxlint'] }],
+          options: {
+            cwd: projectType === 'app' ? '.' : `libs/${projectName}`,
+            lintTargetName: 'lint',
+          },
+        })
+      );
+    }
+  );
 });
 
-/**
- * Creates a test project with create-nx-workspace and installs the plugin
- * @returns The directory where the test project was created
- */
-function createTestProject(projectName: string) {
+function createTestWorkspace(projectName: string) {
   execSync(
-    `npx -y create-nx-workspace@latest ${projectName} --preset react-monorepo --nxCloud=skip --no-interactive`,
+    `npx -y create-nx-workspace@latest ${projectName} --preset apps --nxCloud=skip --skipGit --unitTestRunner=none --e2eTestRunner=none --no-interactive --packageManager=npm`,
     {
       stdio: 'inherit',
       env: process.env,
@@ -97,13 +113,25 @@ function createTestProject(projectName: string) {
   return join(process.cwd(), projectName);
 }
 
+function createTestApp(projectDirectory: string, appName: string) {
+  execSync(
+    `npx -y nx g @nx/react:application ${appName} --directory=apps/${appName} --nxCloud=skip --unitTestRunner=none --e2eTestRunner=none --no-interactive`,
+    {
+      cwd: projectDirectory,
+      stdio: 'inherit',
+      env: process.env,
+      timeout: 120000,
+    }
+  );
+}
+
 function createTestLib(
   projectDirectory: string,
   libName: string,
   libType: 'react' | 'js'
 ) {
   execSync(
-    `npx -y nx g @nx/${libType}:library ${libName} --directory=libs/${libName} --nxCloud=skip --no-interactive`,
+    `npx -y nx g @nx/${libType}:library ${libName} --directory=libs/${libName} --nxCloud=skip --unitTestRunner=none --no-interactive`,
     {
       cwd: projectDirectory,
       stdio: 'inherit',

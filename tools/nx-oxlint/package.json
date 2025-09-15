@@ -1,6 +1,6 @@
 {
   "name": "nx-oxlint",
-  "version": "0.0.0",
+  "version": "0.0.0-e2e",
   "license": "MIT",
   "keywords": [
     "nx",
@@ -62,6 +62,8 @@
   "files": [
     "dist",
     "!**/*.tsbuildinfo",
-    "executors.json"
-  ]
+    "executors.json",
+    "generators.json"
+  ],
+  "generators": "./generators.json"
 }

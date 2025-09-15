@@ -38,9 +38,9 @@
       }
     },
     {
-      "plugin": "@nx/eslint/plugin",
+      "plugin": "nx-oxlint",
       "options": {
-        "targetName": "lint"
+        "lintTargetName": "lint"
       }
     },
     {
@@ -83,9 +83,6 @@
       "inputs": ["production", "^production"]
     },
     "test": {
-      "dependsOn": ["^build"]
-    },
-    "e2e": {
       "dependsOn": ["^build"]
     }
   },

@@ -22,7 +22,7 @@ export default defineConfig(() => ({
     },
     globalSetup: '../../tools/scripts/start-local-registry.ts',
     globalTeardown: '../../tools/scripts/stop-local-registry.ts',
-    testTimeout: 300000, // 5 minutes for individual tests
     hookTimeout: 600000, // 10 minutes for setup/teardown hooks
+    testTimeout: 180000, // 3 minutes for individual tests
   },
 }));
