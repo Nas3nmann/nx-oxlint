@@ -36,19 +36,20 @@ nx reset
 npm install nx-oxlint
 ```
 
-### Add plugin to your `nx.json` OR
+### Add plugin to your `nx.json` or
 
-````json
+```json
 {
-  plugins: [
+  "plugins": [
     {
       "plugin": "nx-oxlint",
       "options": {
         "lintTargetName": "lint"
       }
-    },
+    }
   ]
 }
+```
 
 ### Add the executor to `project.json`:
 
@@ -60,7 +61,7 @@ npm install nx-oxlint
     }
   }
 }
-````
+```
 
 ## Run Linting:
 
@@ -98,3 +99,7 @@ All options are optional. The executor will work with minimal configuration.
 If no config file is passed to the plugin/executor, Oxlint will automatically look for configuration files and even consider nested configs with name `.oxlintrc.json`
 
 See [oxlint documentation](https://oxc-project.github.io/docs/guide/usage/linter.html) for configuration options.
+
+```
+
+```
