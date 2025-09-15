@@ -24,5 +24,6 @@ export default defineConfig(() => ({
     globalTeardown: '../../tools/scripts/stop-local-registry.ts',
     hookTimeout: 600000, // 10 minutes for setup/teardown hooks
     testTimeout: 180000, // 3 minutes for individual tests
+    pool: 'threads',
   },
 }));
