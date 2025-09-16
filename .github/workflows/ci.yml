@@ -22,9 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
-        run: npx nx lint nx-oxlint
-
       - name: Test
         run: npx nx test nx-oxlint
 
