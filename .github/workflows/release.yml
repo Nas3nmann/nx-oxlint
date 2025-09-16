@@ -29,11 +29,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Test
-        run: npx nx test nx-oxlint
-
       - name: Build
         run: npx nx build nx-oxlint
+
+      - name: Lint
+        run: npx nx lint nx-oxlint
+
+      - name: Test
+        run: npx nx test nx-oxlint
 
       - name: Update package version
         run: |
