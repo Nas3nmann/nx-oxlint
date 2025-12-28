@@ -21,17 +21,34 @@
 
 ```bash
 nx build nx-oxlint        # Build plugin
-nx test nx-oxlint         # Run tests
 nx lint nx-oxlint         # Lint code
+nx test nx-oxlint         # Run tests
+nx e2e nx-oxlint-e2e         # Run e2e tests
 ```
 
-**Test with demo projects:**
+**Test locally with Verdaccio:**
 
-```bash
-nx lint react-app         # Test React app
-nx lint react-lib         # Test React library
-nx lint ts-lib            # Test TypeScript library
-```
+You can test the plugin in any local Nx project by publishing it to a local npm registry:
+
+1. Start Verdaccio and publish the plugin:
+
+   ```bash
+   npx tsx tools/scripts/publish-local.ts
+   ```
+
+   This starts a local registry at `http://localhost:4873` and publishes the plugin as version `0.0.0-e2e`.
+
+2. In your test project, create an `.npmrc` file to use the local registry:
+
+   ```
+   registry=http://localhost:4873
+   ```
+
+3. Install and use the plugin:
+
+   ```bash
+   npm install nx-oxlint@e2e
+   ```
 
 ## Submitting Changes
 
