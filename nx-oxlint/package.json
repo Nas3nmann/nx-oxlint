@@ -1,6 +1,17 @@
 {
   "name": "nx-oxlint",
   "version": "0.0.1",
+  "license": "MIT",
+  "keywords": [
+    "nx",
+    "oxlint",
+    "linter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nas3nmann/nx-oxlint",
+    "directory": "nx-oxlint"
+  },
   "type": "commonjs",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
