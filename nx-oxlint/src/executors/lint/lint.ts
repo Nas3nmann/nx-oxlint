@@ -76,6 +76,10 @@ const runExecutor: PromiseExecutor<LintExecutorSchema> = async (
       args.push(`--config=${configFilePath}`);
     }
 
+    if (options.additionalArguments) {
+      args.push(options.additionalArguments);
+    }
+
     const command = `${oxlintBinaryPath} ${args.join(' ')}`;
     console.log(`Executing: ${command}`);
 

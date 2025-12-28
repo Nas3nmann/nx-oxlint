@@ -93,6 +93,7 @@ All options are optional. The executor will work with minimal configuration.
   - Available formats: `checkstyle`, `default`, `github`, `gitlab`, `json`, `junit`, `stylish`, `unix`
 - `quiet` _(optional)_ - Report errors only, disable warnings (default: `false`)
 - `maxWarnings` _(optional)_ - Number of warnings to trigger nonzero exit code (minimum: 0)
+- `additionalArguments` _(optional)_ - Additional arguments to pass to oxlint (e.g., `--type-aware` or `--type-check`)
 
 ## Configuration
 

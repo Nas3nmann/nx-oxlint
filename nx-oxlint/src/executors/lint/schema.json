@@ -42,6 +42,10 @@
     "configFile": {
       "type": "string",
       "description": "Path to the oxlint configuration file (.oxlintrc.json)"
+    },
+    "additionalArguments": {
+      "type": "string",
+      "description": "Additional arguments to pass to oxlint (e.g. '--type-aware' or '--type-check')"
     }
   },
   "required": []
