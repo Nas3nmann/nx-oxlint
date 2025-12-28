@@ -97,6 +97,19 @@ describe('nx-oxlint', () => {
       );
     },
   );
+
+  it('should run lint with type-check successfully', () => {
+    const result = execSync(
+      `npx nx lint ${testTsLibName} --additionalArguments="--type-check"`,
+      {
+        cwd: projectDirectory,
+        stdio: 'pipe',
+        encoding: 'utf-8',
+      },
+    );
+
+    expect(result).toContain('oxlint completed successfully');
+  });
 });
 
 function createTestWorkspace(projectName: string, appName: string) {
