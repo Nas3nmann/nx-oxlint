@@ -13,4 +13,5 @@ export interface LintExecutorSchema {
   quiet?: boolean;
   maxWarnings?: number;
   configFile?: string;
+  additionalArguments?: string;
 }

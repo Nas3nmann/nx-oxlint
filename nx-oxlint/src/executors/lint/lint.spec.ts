@@ -172,6 +172,49 @@ describe('Lint Executor', () => {
     });
   });
 
+  describe('additional arguments handling', () => {
+    it('should add additional arguments when provided', async () => {
+      const options: LintExecutorSchema = {
+        additionalArguments: '--type-aware',
+      };
+
+      await executor(options, mockContext);
+
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project --type-aware`,
+        expect.any(Object),
+      );
+    });
+
+    it('should add multiple additional arguments when provided', async () => {
+      const options: LintExecutorSchema = {
+        additionalArguments: '--type-aware --type-check',
+      };
+
+      await executor(options, mockContext);
+
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project --type-aware --type-check`,
+        expect.any(Object),
+      );
+    });
+
+    it('should combine additional arguments with other options', async () => {
+      const options: LintExecutorSchema = {
+        fix: true,
+        format: 'json',
+        additionalArguments: '--type-aware',
+      };
+
+      await executor(options, mockContext);
+
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project --fix --format=json --type-aware`,
+        expect.any(Object),
+      );
+    });
+  });
+
   describe('format options', () => {
     const formats = [
       'checkstyle',
