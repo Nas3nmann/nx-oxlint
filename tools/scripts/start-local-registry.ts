@@ -1,9 +1,10 @@
 /**
  * This script starts a local registry for e2e testing purposes.
- * It is meant to be called in vitest's globalSetup.
+ * It is meant to be called in jest's globalSetup.
  */
 
-import './registry.d.ts';
+/// <reference path="registry.d.ts" />
+
 import { startLocalRegistry } from '@nx/js/plugins/jest/local-registry';
 import { releasePublish, releaseVersion } from 'nx/release';
 

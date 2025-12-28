@@ -1,1 +1,1 @@
-tools/nx-oxlint/README.md
+./nx-oxlint/README.md

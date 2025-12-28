@@ -32,4 +32,4 @@ jobs:
         run: npx nx test nx-oxlint
 
       - name: Test E2E
-        run: npx nx test nx-oxlint-e2e
+        run: npx nx e2e nx-oxlint-e2e
