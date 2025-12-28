@@ -8,12 +8,14 @@ on:
         required: true
         type: string
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   release:
     name: 'Release nx-oxlint'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout
@@ -22,15 +24,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Build
-        run: npx nx build nx-oxlint
 
       - name: Lint
         run: npx nx lint nx-oxlint
@@ -40,28 +39,27 @@ jobs:
 
       - name: Update package version
         run: |
-          cd tools/nx-oxlint
+          cd nx-oxlint
           npm version ${{ inputs.version }} --no-git-tag-version
 
+      - name: Build
+        run: npx nx build nx-oxlint
+
       - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          cd tools/nx-oxlint
-          npm publish --access public
+          cd dist/nx-oxlint
+          npm publish --access public --provenance
 
       - name: Commit version update
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add tools/nx-oxlint/package.json
+          git add nx-oxlint/package.json
           git commit -m "chore: bump version to v${{ inputs.version }}"
           git push
 
       - name: Create release archive
-        run: |
-          cd tools/nx-oxlint
-          tar -czf nx-oxlint-v${{ inputs.version }}.tar.gz -C dist .
+        run: tar -czf nx-oxlint-v${{ inputs.version }}.tar.gz -C dist/nx-oxlint .
 
       - name: Create GitHub Release
         env:
@@ -70,4 +68,4 @@ jobs:
           gh release create "v${{ inputs.version }}" \
             --title "nx-oxlint v${{ inputs.version }}" \
             --generate-notes \
-            tools/nx-oxlint/nx-oxlint-v${{ inputs.version }}.tar.gz
+            nx-oxlint-v${{ inputs.version }}.tar.gz
