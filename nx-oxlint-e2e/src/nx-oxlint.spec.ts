@@ -98,9 +98,9 @@ describe('nx-oxlint', () => {
     },
   );
 
-  it('should run lint with type-check successfully', () => {
+  it('should pass additionalArguments through to oxlint', () => {
     const result = execSync(
-      `npx nx lint ${testTsLibName} --additionalArguments="--type-check"`,
+      `npx nx lint ${testTsLibName} --additionalArguments="--threads=1"`,
       {
         cwd: projectDirectory,
         stdio: 'pipe',
@@ -109,6 +109,7 @@ describe('nx-oxlint', () => {
     );
 
     expect(result).toContain('oxlint completed successfully');
+    expect(result).toContain('using 1 threads');
   });
 });
 
