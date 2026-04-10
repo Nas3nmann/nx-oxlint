@@ -408,7 +408,24 @@ describe('Lint Executor', () => {
       );
     });
 
-    it('should find and use default .oxlintrc in project root when .oxlintrc.json does not exist', async () => {
+    it('should find and use oxlint.config.ts when .oxlintrc.json does not exist', async () => {
+      const defaultConfigPath = '/workspace/apps/test-project/oxlint.config.ts';
+      mockExistsSync.mockImplementation((path) => path === defaultConfigPath);
+
+      const options: LintExecutorSchema = {};
+
+      await executor(options, mockContext);
+
+      expect(mockExecSync).toHaveBeenCalledWith(
+        `${expectedBinaryPath} apps/test-project --config=${defaultConfigPath}`,
+        expect.any(Object),
+      );
+      expect(console.log).toHaveBeenCalledWith(
+        `Using config file: ${defaultConfigPath}`,
+      );
+    });
+
+    it('should find and use default .oxlintrc in project root when higher-priority configs do not exist', async () => {
       const defaultConfigPath = '/workspace/apps/test-project/.oxlintrc';
       mockExistsSync.mockImplementation((path) => path === defaultConfigPath);
 
@@ -460,12 +477,16 @@ describe('Lint Executor', () => {
 
     it('should prioritize .oxlintrc.json over other config files', async () => {
       const oxlintrcJson = '/workspace/apps/test-project/.oxlintrc.json';
+      const oxlintConfigTs = '/workspace/apps/test-project/oxlint.config.ts';
       const oxlintrc = '/workspace/apps/test-project/.oxlintrc';
       const oxlintJson = '/workspace/apps/test-project/oxlint.json';
 
       mockExistsSync.mockImplementation((path) => {
         return (
-          path === oxlintrcJson || path === oxlintrc || path === oxlintJson
+          path === oxlintrcJson ||
+          path === oxlintConfigTs ||
+          path === oxlintrc ||
+          path === oxlintJson
         );
       });
 

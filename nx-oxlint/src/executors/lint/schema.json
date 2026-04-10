@@ -41,7 +41,7 @@
     },
     "configFile": {
       "type": "string",
-      "description": "Path to the oxlint configuration file (.oxlintrc.json)"
+      "description": "Path to the oxlint configuration file (e.g. .oxlintrc.json or oxlint.config.ts), relative to the workspace root"
     },
     "additionalArguments": {
       "type": "string",

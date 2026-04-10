@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { readFileSync, rmSync } from 'fs';
+import { readFileSync, rmSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 describe('nx-oxlint', () => {
@@ -16,6 +16,21 @@ describe('nx-oxlint', () => {
     projectDirectory = createTestWorkspace(workspaceName, testAppName);
     createTestLib(projectDirectory, testReactLibName, 'react');
     createTestLib(projectDirectory, testTsLibName, 'js');
+
+    // Plugin only infers lint where an oxlint config exist
+    const minimalOxlintConfig = '{}\n';
+    writeFileSync(
+      join(projectDirectory, '.oxlintrc.json'),
+      minimalOxlintConfig,
+    );
+    writeFileSync(
+      join(projectDirectory, 'libs', testReactLibName, '.oxlintrc.json'),
+      minimalOxlintConfig,
+    );
+    writeFileSync(
+      join(projectDirectory, 'libs', testTsLibName, '.oxlintrc.json'),
+      minimalOxlintConfig,
+    );
 
     execSync(`npx nx add nx-oxlint@e2e`, {
       cwd: projectDirectory,
@@ -88,7 +103,11 @@ describe('nx-oxlint', () => {
         expect.objectContaining({
           executor: 'nx-oxlint:lint',
           cache: true,
-          inputs: ['{projectRoot}/**/*', { externalDependencies: ['oxlint'] }],
+          inputs: [
+            '{projectRoot}/.oxlintrc.json',
+            '{projectRoot}/**/*',
+            { externalDependencies: ['oxlint'] },
+          ],
           options: {
             cwd: projectType === 'app' ? '.' : `libs/${projectName}`,
             lintTargetName: 'lint',

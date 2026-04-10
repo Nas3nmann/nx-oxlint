@@ -5,8 +5,9 @@ import {
   joinPathFragments,
   TargetConfiguration,
 } from '@nx/devkit';
-import { readdirSync } from 'fs';
-import { dirname, join } from 'path';
+import { basename, dirname, join } from 'path';
+
+import { findOxlintConfigFile } from './lib/oxlint-config';
 
 export type OxlintFormatOption =
   | 'checkstyle'
@@ -38,7 +39,7 @@ export const createNodesV2: CreateNodesV2<OxlintPluginOptions> = [
         createNodesInternal(configFile, options || {}, context),
       configFiles,
       options,
-      context
+      context,
     );
   },
 ];
@@ -48,11 +49,16 @@ const DEFAULT_LINT_TARGET_NAME = 'lint';
 async function createNodesInternal(
   configFilePath: string,
   options: OxlintPluginOptions,
-  context: CreateNodesContextV2
+  context: CreateNodesContextV2,
 ) {
   const projectRoot = dirname(configFilePath);
-  const siblingFiles = readdirSync(join(context.workspaceRoot, projectRoot));
-  const hasOxlintConfig = siblingFiles.includes('.oxlintrc.json');
+  const oxlintConfigPath = findOxlintConfigFile(
+    join(context.workspaceRoot, projectRoot),
+  );
+
+  if (!oxlintConfigPath) {
+    return { projects: {} };
+  }
 
   const lintTarget: TargetConfiguration = {
     executor: 'nx-oxlint:lint',
@@ -62,7 +68,7 @@ async function createNodesInternal(
     },
     cache: true,
     inputs: [
-      ...(hasOxlintConfig ? ['{projectRoot}/.oxlintrc.json'] : []),
+      joinPathFragments('{projectRoot}', basename(oxlintConfigPath)),
       joinPathFragments('{projectRoot}', '**', '*'),
       {
         externalDependencies: ['oxlint'],
