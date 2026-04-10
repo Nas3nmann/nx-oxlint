@@ -2,6 +2,7 @@ import { PromiseExecutor, ExecutorContext } from '@nx/devkit';
 import { execSync } from 'child_process';
 import { join } from 'path';
 import { existsSync } from 'fs';
+import { findOxlintConfigFile } from '../../lib/oxlint-config';
 import { LintExecutorSchema } from './schema';
 
 const runExecutor: PromiseExecutor<LintExecutorSchema> = async (
@@ -27,18 +28,9 @@ const runExecutor: PromiseExecutor<LintExecutorSchema> = async (
       configFilePath = undefined;
     }
   } else {
-    const defaultConfigPaths = [
-      join(context.root, projectRoot, '.oxlintrc.json'),
-      join(context.root, projectRoot, '.oxlintrc'),
-      join(context.root, projectRoot, 'oxlint.json'),
-    ];
-
-    for (const configPath of defaultConfigPaths) {
-      if (existsSync(configPath)) {
-        configFilePath = configPath;
-        break;
-      }
-    }
+    configFilePath = findOxlintConfigFile(
+      join(context.root, projectRoot),
+    );
   }
 
   console.log(`Running oxlint for project: ${context.projectName}`);
