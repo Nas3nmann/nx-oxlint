@@ -48,7 +48,19 @@ jobs:
       - name: Publish to npm
         run: |
           cd dist/nx-oxlint
-          npm publish --access public --provenance
+          VERSION="${{ inputs.version }}"
+          # npm requires --tag for prerelease versions (e.g. 1.0.0-rc.1); default tag is "latest".
+          if [[ "$VERSION" == *-* ]]; then
+            DIST_TAG=next
+            case "$VERSION" in
+              *-rc*|*-RC*) DIST_TAG=rc ;;
+              *-beta*|*-Beta*) DIST_TAG=beta ;;
+              *-alpha*|*-Alpha*) DIST_TAG=alpha ;;
+            esac
+            npm publish --access public --provenance --tag "$DIST_TAG"
+          else
+            npm publish --access public --provenance
+          fi
 
       - name: Commit version update
         run: |
