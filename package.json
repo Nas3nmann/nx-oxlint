@@ -10,19 +10,19 @@
   },
   "private": true,
   "dependencies": {
-    "@nx/devkit": "22.4.5"
+    "@nx/devkit": "22.6.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
-    "@nx/eslint": "22.4.5",
-    "@nx/eslint-plugin": "22.4.5",
-    "@nx/jest": "22.4.5",
-    "@nx/js": "22.4.5",
-    "@nx/workspace": "22.4.5",
-    "@swc-node/register": "~1.9.1",
-    "@swc/cli": "~0.6.0",
-    "@swc/core": "~1.5.7",
-    "@swc/helpers": "~0.5.11",
+    "@nx/eslint": "22.6.5",
+    "@nx/eslint-plugin": "22.6.5",
+    "@nx/jest": "22.6.5",
+    "@nx/js": "22.6.5",
+    "@nx/workspace": "22.6.5",
+    "@swc-node/register": "~1.11.1",
+    "@swc/cli": "~0.8.1",
+    "@swc/core": "~1.15.24",
+    "@swc/helpers": "~0.5.21",
     "@types/jest": "^30.0.0",
     "@types/node": "20.19.9",
     "eslint": "^9.8.0",
@@ -32,15 +32,15 @@
     "jest-environment-node": "^30.0.2",
     "jest-util": "^30.0.2",
     "jsonc-eslint-parser": "^2.1.0",
-    "nx": "22.4.5",
-    "prettier": "~3.6.2",
+    "nx": "22.6.5",
+    "prettier": "~3.8.2",
     "ts-jest": "^29.4.0",
-    "ts-node": "10.9.1",
+    "ts-node": "10.9.2",
     "tslib": "^2.3.0",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.40.0",
     "verdaccio": "^6.0.5",
-    "@nx/plugin": "22.4.5"
+    "@nx/plugin": "22.6.5"
   },
   "nx": {
     "includedScripts": []
